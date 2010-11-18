@@ -1258,6 +1258,11 @@ tc32 vpx_net_is_writeable(struct vpxsocket *vpx_sock)
     {
         tc32 ret;
         struct timeval tv = {0, 0};
+        fd_set write_fds;
+
+        FD_ZERO(&write_fds);
+        FD_SET(vpx_sock->sock, &write_fds);
+
 
         ret = select(vpx_sock->sock + 1, NULL, &write_fds, NULL, &tv);
         if ((ret > 0) &&

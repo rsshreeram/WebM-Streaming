@@ -22,8 +22,8 @@ int main() {
     close(0);
     /* Duplicate the input side of pipe to stdin*/
     dup(fd[0]);
-    /* Run the Encoder module here*/
-    execlp("encoder", "encoder", NULL);
+    /* Run the audio playback module here*/
+    execlp("audioplayback", "audioplayback", NULL);
   } else {
     /* Parent process*/    
     close(fd[0]);
@@ -31,8 +31,8 @@ int main() {
     close(1);
     /* Duplicate the output side of pipe to stdout*/
     dup(fd[1]);
-    /* Run the Audio capture module here */
-    execl("audiocapture", "audiocapture", NULL);
+    /* Run the decoder module here */
+    execl("decoder", "decoder", NULL);
   }
   
   
