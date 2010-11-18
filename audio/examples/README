@@ -1,0 +1,60 @@
+
+Content of the Folder:
+---------------------
+
+1. audiocapture.c	- contains source for audio capture from Mic   
+2. audioplayback.c  	- contains source for audio playback
+3. encoder.c  		- contains source for audio encoding
+4. decocer.c		- contains source for audio decoding
+5. Makefile		- Makefile for build
+6. testAudiocapture.c	- testing Audio capture
+7. testAudioplayback.c	- testing Audio playback
+8. testEncoder.c	- testing Encoder
+9. testDecoder.c	- testing Decoder
+
+Binaries:
+--------
+1. To get the binaries run "make" in your shell terminal
+2. To clean the folder run "make clean" in your shell terminal
+
+Requirements:
+------------
+To use this audio binaries you must have libvorbis, libavcodec,
+libasound and libvorbisidec installed in your computer. Use the 
+synaptics package manager to install the libraries if they are 
+not installed.
+
+
+Testing the audio capture, playback, encoder, decoder:
+-----------------------------------------------------
+To test the audio capture create the binaries using the previous
+method and run "./audiocapture > sample.raw" in your shell terminal.
+you can provide any name instead of sample.raw. It is the output file
+which contains the captures audio data.
+
+To test the audio playback capture a sample audio using the previous
+audio capture method and use the same output file like as shown below.
+"./audioplayback < sample.raw". you can now hear the same audio you 
+captured previously.
+
+To test the Vorbis audio encoder use the same output file that you used
+for playback e.g. sample.raw and encode using the below mentioned 
+command.
+"./encoder < sample.raw > sample.oga" 
+
+The file "sample.vob" is the encoded audio file which has the same 
+content as sample.raw. You can play the encoded file using vlc.
+"./vlc sample.oga" 
+
+To test the Vorbis audio decoder use any ogg audio file and play using 
+the decoder.
+"./decoder sample.oga"
+
+	   	       Just give a try!!!
+
+For more information contact
+
+Shreeram Ramamurthy Swaminathan
+Student 
+MIUN
+shreeram1985@yahoo.co.in

@@ -1,0 +1,11 @@
+gpg: key 9EA96201 marked as ultimately trusted
+public and secret key created and signed.
+
+gpg: checking the trustdb
+gpg: 3 marginal(s) needed, 1 complete(s) needed, PGP trust model
+gpg: depth: 0  valid:   1  signed:   0  trust: 0-, 0q, 0n, 0m, 0f, 1u
+pub   2048R/9EA96201 2010-11-18
+      Key fingerprint = 52CC EBD0 1E19 0669 11B0  7F65 AA1E 9934 9EA9 6201
+uid                  rsshreeram (webmstreaming) <shreeram1985@yahoo.co.in>
+sub   2048R/6B77DFD1 2010-11-18
+
