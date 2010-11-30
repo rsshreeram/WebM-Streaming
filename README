@@ -1,0 +1,39 @@
+Introduction
+------------
+This project deals with a WebM streaming solution using VP8 and vorbis for video 
+audio respectively. 
+
+Contents
+--------
+
+1. audio		-	Directory containing audio source
+2. gitrepo.txt		-	File conatining repo link
+3. libwebm		-	Empty direcory linked to libwebm repo
+4. pubkey		-	file containing the public key for repo
+5. README		-	Readme file
+6. rfc5215.pdf		-	RTP format spec for Ogg Vorbis
+7. rtpaudio.txt		-	Payload format text for audio through RTP
+8. udpsample		-	Empty directory linked to udpsample repo
+9. webMYoutube		-	Wireshark PCAP file of Youtube WebM stream
+
+Compiling Audio Framework
+-------------------------
+
+To build the audio framework change to the audio directory and create two
+directories 'build' and 'lib'. Then run 'make' to build the whole audio framework
+The libraries and the binaries will be available in the directories created
+earlier.
+
+Requirements
+------------
+Libraries required to compile
+
+1. libavcodec-dev
+2. libasound
+3. libvorbis-dev
+4. libvorbisidec-dev
+
+Please use synaptics package manager to install them in ubuntu.
+You can also download them directly if you do not use the ubuntu
+linux distribution.
+
