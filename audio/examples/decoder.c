@@ -3,6 +3,7 @@
 #include <math.h>
 #include <vorbis/codec.h>
 #include <vorbis/vorbisfile.h>
+#include <time.h>
 
 #define OUTPUT_BUFFER_SIZE      4096
 
@@ -13,7 +14,7 @@ int decode() {
     Declare Ogg Vorbis file structure
    */
   OggVorbis_File vf;
-  int eof=0;
+  int eof = 0;
   int current_section;
 
 
@@ -50,6 +51,7 @@ int decode() {
     if (ret == 0) {
       /* EOF */
       eof=1;
+      fprintf(stderr, "End of File\n");
     } else if (ret < 0) {
       /* error in the stream.  Not a problem, just reporting it in
 	 case we (the app) cares.  In this case, we don't. */

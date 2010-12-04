@@ -9,7 +9,7 @@
  */
 
 #define LARGESTFRAMESIZE 1000000
-#define PACKET_SIZE 1400
+#define PACKET_SIZE 1024
 
 enum
 {

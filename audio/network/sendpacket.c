@@ -27,7 +27,7 @@ GNU General Public License for more details.
 #include <time.h>
 
 
-#define READ                  1024
+#define READ                  PACKET_SIZE
 #define BACKLOG               3
 #define FAIL_ON_NONZERO(x) if((x)) { vpxlog_dbg(ERRORS,#x"\n");return -1; };
 #define FAIL_ON_ZERO(x) if(!(x)) { vpxlog_dbg(ERRORS,#x"\n");return -1; };
@@ -173,13 +173,13 @@ TCRV packetizeandsend(char *ip) {
   PACKET packet;
   sourceid = random32(OGG_VERSION);
   
-  while (! feof(stdin) && ! ferror(stdin)) {
-    long bytes=fread(readbuffer, 1, READ, stdin);
+  while (!feof(stdin) && !ferror(stdin)) {
+    int bytes = fread(readbuffer, 1, READ, stdin);
     
     if (bytes != 0) {
-      packetize(&packet, readbuffer);
-      rc = vpx_net_sendto(&ogg_sock1, (tc8 *)&packet, sizeof(packet) , &bytes_sent, ogg_address);
-      
+      //      packetize(&packet, readbuffer);
+      // rc = vpx_net_sendto(&ogg_sock1, (tc8 *)&packet, sizeof(packet) , &bytes_sent, ogg_address);
+      rc = vpx_net_sendto(&ogg_sock1, (tc8 *)&readbuffer, bytes , &bytes_sent, ogg_address);
       if (rc != TC_OK && rc != TC_WOULDBLOCK)
 	vpxlog_dbg(LOG_PACKET, "error\n");
 
