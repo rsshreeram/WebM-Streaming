@@ -50,12 +50,12 @@ typedef struct
     unsigned int ssrc ;
     unsigned int csrc ;  // repeated up to 15 times
 
-    unsigned int type : 1;
-    unsigned int redundant_count : 3;
-    unsigned int new_frame: 1;
-    unsigned int end_frame: 1;
-    unsigned int frame_type: 2;
 
+    int ident : 24;
+    int fragment_type : 2;
+    int vorbis_data_type : 2;
+    int nopkts : 4;
+    unsigned short len;
     unsigned char data[PACKET_SIZE];
 
     // this value doesn't actually get written or read
@@ -68,3 +68,12 @@ typedef struct
 unsigned int get_time(void);
 void vpxlog_dbg_no_head(int level, const tc8 *format, ...);
 void vpxlog_dbg(int level, const tc8 *format, ...);
+
+#define IP_SIZE  512
+#define DEFAULT_SEND_PORT     8546
+#define DEFAULT_RECV_PORT     8548
+
+
+#define AU_BITRATE       128
+#define SAMPLE_RATE      44.1
+

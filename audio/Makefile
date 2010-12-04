@@ -27,11 +27,12 @@ aureceivedecompressplay: buildpath aureceivedecompressplay.o
 buildpath:
 	@echo 'Building Modules'
 	$(MAKE) -C examples -s
-
+	$(MAKE) -C network -s
 .PHONY: clean
 
 clean:
 	$(MAKE) -C examples clean
+	$(MAKE) -C network clean
 	rm -f *.o *~
 	rm -f $(BUILD_PATH)/augrabcompressandsend
 	rm -f $(BUILD_PATH)/aureceivedecompressplay
