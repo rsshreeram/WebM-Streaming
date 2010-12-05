@@ -19,10 +19,9 @@ Contents
 Compiling Audio Framework
 -------------------------
 
-To build the audio framework change to the audio directory and create two
-directories 'build' and 'lib'. Then run 'make' to build the whole audio framework
-The libraries and the binaries will be available in the directories created
-earlier.
+To build the audio framework change to the audio directory and run 'make' to
+build the whole audio framework. The libraries and the binaries will be 
+available in the lib and lib directories respectively.
 
 Requirements
 ------------
