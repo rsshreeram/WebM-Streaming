@@ -25,7 +25,7 @@ GNU General Public License for more details.
 #include <sys/time.h>
 
 #define READ        PACKET_SIZE
-void depacketize(PACKET *packet, char *readbuf);
+void depacketize(PACKET *packet, tc8 *readbuf);
 
 
 int main() {
@@ -118,11 +118,11 @@ TCRV recvpacket() {
             bytes_read = 0;
 
         if (bytes_read) {
-	  //	  depacketize(&packet, one_packet);
+	  depacketize(&packet, one_packet);
 	}
 
-	//	fwrite(packet.data, 1, READ, stdout);
-	fwrite(one_packet, 1, bytes_read, stdout);
+	fwrite(packet.data, 1, READ, stdout);
+	//fwrite(one_packet, 1, bytes_read, stdout);
     }
     
     return TC_OK;
@@ -130,7 +130,6 @@ TCRV recvpacket() {
 
 
 
-void depacketize(PACKET *packet, char *readbuf) {
-  packet->len = readbuf[HEADER_SIZE - 2];
-  memcpy(packet->data, readbuf + HEADER_SIZE, packet->len);
+void depacketize(PACKET *packet, tc8 *readbuf) {
+  memcpy(packet->data, readbuf + HEADER_SIZE, READ);
 }

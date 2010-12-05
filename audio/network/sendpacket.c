@@ -170,16 +170,18 @@ TCRV packetizeandsend(char *ip) {
     start rtp payload
    */  
   char readbuffer[READ];
-  PACKET packet;
+  tc8 packet[sizeof(PACKET)];
+  PACKET *pkt = (PACKET *)packet;
   sourceid = random32(OGG_VERSION);
   
   while (!feof(stdin) && !ferror(stdin)) {
     int bytes = fread(readbuffer, 1, READ, stdin);
     
     if (bytes != 0) {
-      //      packetize(&packet, readbuffer);
-      // rc = vpx_net_sendto(&ogg_sock1, (tc8 *)&packet, sizeof(packet) , &bytes_sent, ogg_address);
-      rc = vpx_net_sendto(&ogg_sock1, (tc8 *)&readbuffer, bytes , &bytes_sent, ogg_address);
+      packetize(pkt, readbuffer);
+      rc = vpx_net_sendto(&ogg_sock1, (tc8 *)&packet, sizeof(packet) , &bytes_sent, ogg_address);
+      //rc = vpx_net_sendto(&ogg_sock1, (tc8 *)&readbuffer, bytes , &bytes_sent, ogg_address);
+      //printf("%d bytes sent\n", bytes_sent);
       if (rc != TC_OK && rc != TC_WOULDBLOCK)
 	vpxlog_dbg(LOG_PACKET, "error\n");
 

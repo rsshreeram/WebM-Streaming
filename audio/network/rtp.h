@@ -59,7 +59,7 @@ typedef struct
     unsigned char data[PACKET_SIZE];
 
     // this value doesn't actually get written or read
-    unsigned int size;
+    unsigned short size;
 
 } PACKET;
 
