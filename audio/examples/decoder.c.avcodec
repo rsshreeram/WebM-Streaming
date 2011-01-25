@@ -1,0 +1,107 @@
+/*
+Simple decoder using libavcodec library.
+Copyright (C) 2010  SHREERAM RAMAMURTHY SWAMINATHAN
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+*/
+#define OLD_VERSION
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+#ifdef HAVE_AV_CONFIG_H
+#undef HAVE_AV_CONFIG_H
+#endif
+
+#include <libavcodec/avcodec.h>
+#include <libavutil/mathematics.h>
+#include <libavformat/avformat.h>
+
+#define INBUF_SIZE 4096
+
+void audio_decode_example();
+
+int decode() {
+
+  /* must be called before using avcodec lib */
+  avcodec_init();
+
+  /* register all the codecs */
+  avcodec_register_all();
+
+  audio_decode_example();
+}
+
+void audio_decode_example()
+{
+  AVCodec *codec;
+  AVCodecContext *c= NULL;
+  int out_size, len;
+  uint8_t *outbuf;
+  uint8_t inbuf[INBUF_SIZE + FF_INPUT_BUFFER_PADDING_SIZE];
+  AVPacket avpkt;
+
+  av_init_packet(&avpkt);
+
+  fprintf(stderr, "Audio decoding\n");
+
+  /* find the vorbis audio decoder */
+  codec = avcodec_find_decoder(CODEC_ID_VORBIS);
+  if (!codec) {
+    fprintf(stderr, "codec not found\n");
+    exit(1);
+  }
+
+  c= avcodec_alloc_context();
+
+  /* open it */
+    if (avcodec_open(c, codec) < 0) {
+    fprintf(stderr, "could not open codec\n");
+    exit(1);
+    }
+
+  outbuf = malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE);
+
+  /* decode until eof */
+  avpkt.data = inbuf;
+  for(;;) {
+    avpkt.size = fread(inbuf, 1, INBUF_SIZE, stdin);
+    if (avpkt.size == 0)
+      break;
+
+    avpkt.data = inbuf;
+    while (avpkt.size > 0) {
+      out_size = AVCODEC_MAX_AUDIO_FRAME_SIZE;
+#ifdef OLD_VERSION
+      len = avcodec_decode_audio2(c, (short *)outbuf, &out_size, avpkt.data, avpkt.size);
+#else
+      len = avcodec_decode_audio3(c, (short *)outbuf, &out_size, avpkt.data, &avpkt);
+#endif
+      if (len < 0) {
+	fprintf(stderr, "Error while decoding\n");
+	exit(1);
+      }
+      if (out_size > 0) {
+	/* if a frame has been decoded, output it */
+	fwrite(outbuf, 1, out_size, stdout);
+      }
+      avpkt.size -= len;
+      avpkt.data += len;
+    }
+  }
+
+  free(outbuf);
+
+  avcodec_close(c);
+  av_free(c);
+}

@@ -1,0 +1,106 @@
+/*
+Simple encoder using libavcodec library.
+Copyright (C) 2010  SHREERAM RAMAMURTHY SWAMINATHAN
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+*/
+#define OLD_VERSION
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+#ifdef HAVE_AV_CONFIG_H
+#undef HAVE_AV_CONFIG_H
+#endif
+
+#include <libavcodec/avcodec.h>
+#include <libavutil/mathematics.h>
+#include <libavformat/avformat.h>
+
+#define INBUF_SIZE 4096
+
+
+void audio_encode_example(char *filename);
+
+void encode() {
+  /* must be called before using avcodec lib */
+  avcodec_init();
+  
+  /* register all the codecs */
+  avcodec_register_all();
+  
+  audio_encode_example((char *)stdin);
+}
+
+
+/*
+ * Audio encoding example
+ */
+void audio_encode_example(char *filename)
+{
+    AVCodec *codec;
+    AVCodecContext *c= NULL;
+    int frame_size, out_size, outbuf_size;
+    uint8_t *outbuf;
+    int eos = 0;
+    short *readbuffer;
+    
+    fprintf(stderr, "Audio encoding\n");
+
+    /* find the vorbis encoder */
+    codec = avcodec_find_encoder(CODEC_ID_MP2);
+    //codec = avcodec_find_encoder_by_name("ogg");
+    if (!codec) {
+        fprintf(stderr, "codec not found\n");
+        exit(1);
+    }
+
+    c= avcodec_alloc_context();
+
+    /* put sample parameters */
+    c->bit_rate = 64000;
+    c->sample_rate = 44100;
+    c->channels = 2;
+
+    /* open it */
+    if (avcodec_open(c, codec) < 0) {
+        fprintf(stderr, "could not open codec\n");
+        exit(1);
+    }
+
+    /* the codec gives us the frame size, in samples */
+    frame_size = c->frame_size;
+    readbuffer = malloc(INBUF_SIZE);
+    outbuf_size = 10000;
+    outbuf = malloc(outbuf_size);
+
+    /* read from stdin stream */
+    while (!eos) {
+      int bytes = fread(readbuffer, sizeof(short), INBUF_SIZE, stdin); /* stereo hardwired here */
+      
+      if (bytes == 0) {
+	/* End of stream */
+      } else {
+      
+    /* encode the samples */
+	out_size = avcodec_encode_audio(c, outbuf, outbuf_size, readbuffer);
+	fwrite(outbuf, 1, out_size, stdout);
+      }
+    }
+
+    free(readbuffer);
+    free(outbuf);
+    avcodec_close(c);
+    av_free(c);
+}
+

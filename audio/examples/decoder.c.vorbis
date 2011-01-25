@@ -1,0 +1,188 @@
+/*
+Simple decoder using libvorbis library.
+Copyright (C) 2010  SHREERAM RAMAMURTHY SWAMINATHAN
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <vorbis/codec.h>
+#include <vorbis/vorbisfile.h>
+#include <ogg/ogg.h>
+#include <time.h>
+
+#define OUTPUT_BUFFER_SIZE      4096
+
+char pcmout[OUTPUT_BUFFER_SIZE];
+
+
+int decode() {
+  ogg_stream_state os; /* take physical pages, weld into a logical
+                          stream of packets */
+  ogg_page         og; /* one Ogg bitstream page.  Vorbis packets are inside */
+  ogg_packet       op; /* one raw packet of data for decode */
+
+  vorbis_info      vi; /* struct that stores all the static vorbis bitstream
+                          settings */
+  vorbis_comment   vc; /* struct that stores all the user comments */
+
+  vorbis_dsp_state vd; /* central working state for the packet->PCM decoder */
+  vorbis_block     vb; /* local working space for packet->PCM decode */
+
+  int eos = 0;
+  int i, founddata;
+
+  ogg_sync_state oy; /* Ogg sync structure*/
+  char *buffer;
+  int header_read = 0, init_state = 0;
+  long bytes;
+  
+
+  /*
+    Initialize Vorbis info structure
+   */
+  vorbis_info_init(&vi);
+
+  /*
+    Initialize the comment struct
+   */
+  vorbis_comment_init(&vc);
+  
+  /*
+    Initialize the ogg_sync struct
+   */
+  ogg_sync_init(&oy);
+  
+  fprintf(stderr, "Initialization done\n");
+  
+  while (!eos) {
+    if (ogg_sync_pageout(&oy, &og) != 1) {
+      /*
+	Expose a buffer
+      */
+      buffer = ogg_sync_buffer(&oy, OUTPUT_BUFFER_SIZE + 44);
+      
+      bytes = fread(buffer, 1, OUTPUT_BUFFER_SIZE, stdin);
+      
+      /*
+	Tell the ogg_sync_struct how much buffer we wrote
+      */
+      ogg_sync_wrote(&oy, bytes);
+      ogg_sync_pageout(&oy, &og);
+    }
+    
+    
+    if(bytes == 0) {
+      /*EOS*/
+      /* But continue processing the Ogg packets until we have
+	 them in buffer */
+    } else {     
+      /*
+	Input the ogg page to the stream struct
+      */
+      ogg_stream_pagein(&os, &og);
+      
+      /*
+	pass the ogg packet for header synthesis
+      */ 
+      if (!header_read) {
+	ogg_stream_packetout(&os, &op);
+	vorbis_synthesis_headerin(&vi, &vc, &op);
+	//	ogg_stream_packetout(&os, &op);
+	//vorbis_synthesis_headerin(&vi, &vc, &op);
+	//ogg_stream_packetout(&os, &op);
+	//vorbis_synthesis_headerin(&vi, &vc, &op);	
+	
+	/*
+	  Get the details of the stream
+	*/
+	fprintf(stderr, "Channels: %d\n", vi.channels);
+	fprintf(stderr, "Sample Rate: %u\n", vi.rate);
+	header_read = 1;
+      }
+      
+      if (!init_state) {
+	/*
+	Initialize the vorbis DSP state using synthesis_init
+	*/	
+	vorbis_synthesis_init(&vd, &vi);
+	
+	/*
+	  Initialize the block structure
+	*/
+	vorbis_block_init(&vd, &vb);
+	
+	init_state = 1;
+      }
+      
+      /*
+	Output one Ogg packet
+      */
+      while (ogg_stream_packetout(&os, &op) != 0) {
+	
+	/*
+	  Decode the Ogg packet into block of data
+	*/
+	if (vorbis_synthesis(&vb, &op) == 0) {
+	
+	  /*
+	    submit the block to reassembly layer
+	  */
+	  vorbis_synthesis_blockin(&vd, &vb);
+	}
+
+	/*
+	  PCM output
+	*/
+	int bytes_read = 0;
+	float **pcmout = 0;
+	bytes_read = vorbis_synthesis_pcmout(&vd, &pcmout);
+	
+	short buffer[bytes_read * vi.channels];
+	short* p = buffer;
+	int i,j;
+
+	for (i=0;i < bytes_read; ++i) {
+	  for(j=0; j < vi.channels; ++j) {
+	    int v = (int)(floorf(0.5 + pcmout[j][i]*32767.0));
+	    if (v > 32767) v = 32767;
+	    if (v <-32768) v = -32768;
+	    *p++ = v;
+	  }
+	}
+
+	fwrite(buffer, 2, sizeof(buffer), stdout);
+	
+	if(bytes_read == 0) {
+	  eos = 1;
+	} else {
+	  vorbis_synthesis_read(&vd, bytes_read);
+	}
+	
+      }
+      
+    }
+    
+  }
+  
+  /*clear everything */
+  ogg_stream_clear(&os);
+  vorbis_block_clear(&vb);
+  vorbis_dsp_clear(&vd);
+  vorbis_comment_clear(&vc);
+  vorbis_info_clear(&vi);
+  
+  return 0;
+}
+  
