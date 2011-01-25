@@ -14,8 +14,8 @@
 
 CC=gcc
 A_LIB=-lasound -laudiofunc
-ENC_LIB=-lavcodec -laudiofunc
-DEC_LIB=-lvorbisidec -laudiofunc
+ENC_LIB=-laudiofunc -lvorbis -lvorbisenc
+DEC_LIB=-lvorbisidec -laudiofunc -logg
 C_FLAGS=-c
 LINK=-L. -L$(LIB_PATH)
 LIB_OBJ=decoder.o encoder.o audiocapture.o audioplayback.o

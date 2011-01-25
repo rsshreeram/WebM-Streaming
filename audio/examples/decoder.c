@@ -1,3 +1,19 @@
+/*
+Simple decoder using libvorbis library.
+Copyright (C) 2010  SHREERAM RAMAMURTHY SWAMINATHAN
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -33,6 +49,7 @@ int decode() {
   {
     char **ptr=ov_comment(&vf,-1)->user_comments;
     vorbis_info *vi=ov_info(&vf,-1);
+    
     while(*ptr){
       fprintf(stderr,"%s\n",*ptr);
       ++ptr;
