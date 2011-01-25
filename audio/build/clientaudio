@@ -1,0 +1,6 @@
+#!/bin/sh
+
+
+export PATH=$PATH:$PWD
+
+recvpacket |ffmpeg -i - -f wav -|audioplayback 

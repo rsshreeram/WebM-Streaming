@@ -1,0 +1,15 @@
+#!/bin/sh
+
+export PATH=$PATH:$PWD/audio/build/
+export PATH=$PATH:$PWD/udpsample/
+
+
+EXPECTED_ARGS=1
+
+if [ $# -ne $EXPECTED_ARGS ]; then
+    grabcompressandsend
+else
+    grabcompressandsend -i $1
+fi
+
+

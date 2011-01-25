@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
   char ip[IP_SIZE];
   
   if (argc > 1) {
-    strncpy(ip, argv[0], IP_SIZE);
+    strncpy(ip, argv[1], IP_SIZE);
   } else {
     strncpy(ip, "127.0.0.1", IP_SIZE);
   }
@@ -245,3 +245,4 @@ u_int32 random32(int type)
   return rand;
   /* random32 */
 }
+
