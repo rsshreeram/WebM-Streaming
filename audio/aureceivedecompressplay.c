@@ -39,7 +39,7 @@ int main() {
     /* Duplicate the input side of pipe to stdin*/
     dup(fd[0]);
     /* Run the audio playback module here*/
-    execl("audioplayback", "audioplayback", NULL);
+    execlp("audioplayback", "audioplayback", NULL);
   } else {
     /* Parent process*/    
     close(fd[0]);
@@ -48,7 +48,7 @@ int main() {
     /* Duplicate the output side of pipe to stdout*/
     dup(fd[1]);
     /* Run the decoder module here */
-    execl("decoder", "decoder", NULL);
+    execlp("decoder", "decoder", NULL);
   }
   
   
