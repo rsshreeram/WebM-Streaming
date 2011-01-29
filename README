@@ -31,6 +31,10 @@ Compiling WebM framework
 To build the WebM framework just type 'make' from the main directory. To 
 clean the build you can use 'make clean'
 
+Running the Streaming server and client
+---------------------------------------
+Refer to README.RUN file
+
 Requirements
 ------------
 Some of the libraries required to build binaries have already been included

@@ -1,0 +1,22 @@
+Running the video and audio streaming server
+--------------------------------------------
+
+To run the audio streaming server change the directory to bin and
+type './streamaudio <IP_ADDRESS_OF_CLIENT>'
+
+To run the audio streaming server change the directory to bin and
+type './streamWebM <IP_ADDRESS_OF_CLIENT>'
+
+Note:
+-----
+<IP_ADDRESS_OF_CLIENT> not requires if the server and client are 
+run on the same machine 
+
+Running the video and audio streaming client
+--------------------------------------------
+
+To run the audio streaming client change the directory to bin and
+type './clientaudio'
+
+To run the audio streaming server change the directory to bin and
+type './clientWebM'
