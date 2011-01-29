@@ -26,6 +26,7 @@ all:
 	cp $(ORG_PATH)/$(AUDIO_BUILD)/*  $(BIN_DIR)/
 	cp $(ORG_PATH)/$(VIDEO_BUILD)/grabcompressandsend $(BIN_DIR)/
 	cp $(ORG_PATH)/$(VIDEO_BUILD)/receivedecompressandplay $(BIN_DIR)/
+	cp clientWebM streamWebM $(BIN_DIR)/
 
 .PHONY: clean
 

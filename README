@@ -1,7 +1,14 @@
+WebM stream kit v0.10 by Shreeram Ramamoorthy Swaminathan
+---------------------
+
+
 Introduction
 ------------
 This project deals with a WebM streaming solution using VP8 and vorbis for video 
-audio respectively. 
+audio respectively. The WebM container is still missing in the project which will
+be done in the next version. The video and audio streaming are implemented as 
+separate solutions with separate sockets for streaming purposes. The audio and 
+video are not synchronized in this version. 
 
 Contents
 --------
@@ -15,24 +22,31 @@ Contents
 7. rtpaudio.txt		-	Payload format text for audio through RTP
 8. udpsample		-	Empty directory linked to udpsample repo
 9. webMYoutube		-	Wireshark PCAP file of Youtube WebM stream
+10.streamWebM		-	script to start stream server
+11.clientWebM		-	script to start stream client
+12.Makefile		-	Build Binaries
 
-Compiling Audio Framework
+Compiling WebM framework
 -------------------------
-
-To build the audio framework change to the audio directory and run 'make' to
-build the whole audio framework. The libraries and the binaries will be 
-available in the lib and lib directories respectively.
+To build the WebM framework just type 'make' from the main directory. To 
+clean the build you can use 'make clean'
 
 Requirements
 ------------
+Some of the libraries required to build binaries have already been included
+in the library folder. There are some more libraries needed for compilation.
 Libraries required to compile
 
-1. libavcodec-dev
-2. libasound
-3. libvorbis-dev
-4. libvorbisidec-dev
+1. libvpx
+2. libSDL
+3. libaudiofunc
 
-Please use synaptics package manager to install them in ubuntu.
+Please use synaptics package manager to install libraries in ubuntu.
 You can also download them directly if you do not use the ubuntu
 linux distribution.
 
+Next version Tasks:
+------------------
+1. WebM container
+2. video and audio synchronization
+3. remove library dependencies
